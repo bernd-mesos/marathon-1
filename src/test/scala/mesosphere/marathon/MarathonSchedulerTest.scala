@@ -9,13 +9,11 @@ import mesosphere.marathon.core.launchqueue.LaunchQueue
 import mesosphere.marathon.core.task.update.TaskStatusUpdateProcessor
 import mesosphere.marathon.event.{ SchedulerDisconnectedEvent, SchedulerRegisteredEvent, SchedulerReregisteredEvent }
 import mesosphere.marathon.state.AppRepository
-import mesosphere.marathon.test.{ Mockito, MarathonActorSupport }
+import mesosphere.marathon.test.{ MarathonActorSupport, Mockito }
 import mesosphere.util.state.{ FrameworkIdUtil, MesosLeaderInfo, MutableMesosLeaderInfo }
 import org.apache.mesos.Protos._
 import org.apache.mesos.SchedulerDriver
-import org.scalatest.{ Matchers, GivenWhenThen, BeforeAndAfterAll }
-
-import scala.concurrent.Future
+import org.scalatest.{ BeforeAndAfterAll, GivenWhenThen, Matchers }
 
 class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with BeforeAndAfterAll with Mockito with Matchers with GivenWhenThen {
 

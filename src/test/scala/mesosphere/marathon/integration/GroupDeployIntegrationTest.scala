@@ -5,7 +5,6 @@ import mesosphere.marathon.integration.setup.{ IntegrationFunSuite, IntegrationH
 import mesosphere.marathon.state.{ AppDefinition, PathId, UpgradeStrategy }
 import org.apache.http.HttpStatus
 import org.scalatest._
-import play.api.libs.json.JsObject
 import spray.http.DateTime
 
 import scala.concurrent.duration._

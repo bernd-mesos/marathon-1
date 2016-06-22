@@ -20,8 +20,8 @@ import org.apache.mesos.Protos.TaskStatus
 import scala.collection.immutable.{ Map, Seq }
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.concurrent.{ Await, Future }
 
 class MarathonHealthCheckManager @Inject() (
     system: ActorSystem,

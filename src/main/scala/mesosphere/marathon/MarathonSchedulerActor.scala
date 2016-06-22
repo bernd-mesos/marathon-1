@@ -15,9 +15,8 @@ import mesosphere.marathon.event.{ AppTerminatedEvent, DeploymentFailed, Deploym
 import mesosphere.marathon.health.HealthCheckManager
 import mesosphere.marathon.state._
 import mesosphere.marathon.upgrade.DeploymentManager._
-import mesosphere.marathon.upgrade.{ UpgradeConfig, DeploymentManager, DeploymentPlan, TaskKillActor }
-import mesosphere.mesos.protos
-import org.apache.mesos.Protos.{ Status, TaskState, TaskID }
+import mesosphere.marathon.upgrade.{ DeploymentManager, DeploymentPlan, TaskKillActor, UpgradeConfig }
+import org.apache.mesos.Protos.{ Status, TaskID, TaskState }
 import org.apache.mesos.SchedulerDriver
 import org.slf4j.LoggerFactory
 

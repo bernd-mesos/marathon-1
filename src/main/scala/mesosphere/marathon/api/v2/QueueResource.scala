@@ -6,7 +6,7 @@ import javax.ws.rs._
 import javax.ws.rs.core.{ Context, MediaType, Response }
 
 import com.codahale.metrics.annotation.Timed
-import mesosphere.marathon.{ UnknownAppException, MarathonConf }
+import mesosphere.marathon.MarathonConf
 import mesosphere.marathon.api.v2.json.Formats
 import mesosphere.marathon.api.{ AuthResource, MarathonMediaType }
 import mesosphere.marathon.core.base.Clock

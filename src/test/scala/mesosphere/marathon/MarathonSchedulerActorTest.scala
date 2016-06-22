@@ -42,8 +42,6 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
     with ImplicitSender
     with test.Mockito {
 
-  import scala.concurrent.ExecutionContext.Implicits.global
-
   test("RecoversDeploymentsAndReconcilesHealthChecksOnStart") {
     val app = AppDefinition(id = "test-app".toPath, instances = 1)
     when(groupRepo.rootGroup()).thenReturn(Future.successful(Some(Group.apply(PathId.empty, apps = Set(app)))))
@@ -571,7 +569,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
     ))
     historyActorProps = Props(new HistoryActor(system.eventStream, taskFailureEventRepository))
     schedulerActions = ref => new SchedulerActions(
-      repo, groupRepo, hcManager, taskTracker, queue, new EventStream(), ref, mock[MarathonConf])(system.dispatcher)
+      repo, groupRepo, hcManager, taskTracker, queue, new EventStream(system), ref, mock[MarathonConf])(system.dispatcher)
 
     when(deploymentRepo.store(any)).thenAnswer(new Answer[Future[DeploymentPlan]] {
       override def answer(p1: InvocationOnMock): Future[DeploymentPlan] = {

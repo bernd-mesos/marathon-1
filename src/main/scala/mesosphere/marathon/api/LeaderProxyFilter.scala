@@ -2,7 +2,6 @@ package mesosphere.marathon.api
 
 import java.io.{ IOException, InputStream, OutputStream }
 import java.net._
-import java.security.cert.X509Certificate
 import javax.inject.Named
 import javax.net.ssl._
 import javax.servlet._

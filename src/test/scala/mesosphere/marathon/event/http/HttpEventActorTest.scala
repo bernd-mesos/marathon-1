@@ -6,7 +6,7 @@ import akka.util.Timeout
 import com.codahale.metrics.MetricRegistry
 import com.typesafe.config.ConfigFactory
 import mesosphere.marathon.MarathonSpec
-import mesosphere.marathon.core.base.{ ConstantClock, Clock }
+import mesosphere.marathon.core.base.ConstantClock
 import mesosphere.marathon.event.EventStreamAttached
 import mesosphere.marathon.event.http.HttpEventActor.EventNotificationLimit
 import mesosphere.marathon.event.http.SubscribersKeeperActor.GetSubscribers
@@ -16,8 +16,8 @@ import mesosphere.marathon.test.Mockito
 import org.scalatest.{ GivenWhenThen, Matchers }
 import spray.http.{ HttpRequest, HttpResponse, StatusCode }
 
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future }
 
 class HttpEventActorTest extends MarathonSpec with Mockito with GivenWhenThen with Matchers {
 
@@ -120,8 +120,7 @@ class HttpEventActorTest extends MarathonSpec with Mockito with GivenWhenThen wi
   }
 
   after {
-    system.shutdown()
-    system.awaitTermination()
+    Await.result(system.terminate(), Duration.Inf)
   }
 
   class NoHttpEventActor(subscribers: Set[String])

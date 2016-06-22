@@ -3,13 +3,12 @@ package mesosphere.marathon.upgrade
 import java.net.URL
 import java.util.UUID
 
-import com.wix.accord.dsl._
 import com.wix.accord._
-import mesosphere.marathon.Protos.ZKStoreEntry
-import mesosphere.marathon.{ MarathonConf, Protos }
+import com.wix.accord.dsl._
+import mesosphere.marathon.api.v2.Validation._
 import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.state._
-import mesosphere.marathon.api.v2.Validation._
+import mesosphere.marathon.{ MarathonConf, Protos }
 import mesosphere.util.state.zk.{ CompressionConf, ZKData }
 import org.slf4j.LoggerFactory
 

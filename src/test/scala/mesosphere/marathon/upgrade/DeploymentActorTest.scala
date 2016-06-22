@@ -21,7 +21,7 @@ import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
 import org.scalatest.{ BeforeAndAfterAll, Matchers }
 
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
 class DeploymentActorTest
@@ -108,7 +108,7 @@ class DeploymentActorTest
       verify(f.scheduler).stopApp(f.driver, app4.copy(instances = 0))
     }
     finally {
-      system.shutdown()
+      Await.result(system.terminate(), Duration.Inf)
     }
   }
 
@@ -160,8 +160,7 @@ class DeploymentActorTest
       verify(f.queue).add(appNew, 2)
     }
     finally {
-      f.system.shutdown()
-    }
+      Await.result(system.terminate(), Duration.Inf)    }
   }
 
   test("Restart suspended app") {
@@ -186,7 +185,7 @@ class DeploymentActorTest
       receiverProbe.expectMsg(DeploymentFinished(plan))
     }
     finally {
-      f.system.shutdown()
+      Await.result(system.terminate(), Duration.Inf)
     }
   }
 
@@ -226,7 +225,7 @@ class DeploymentActorTest
       verifyNoMoreInteractions(f.driver)
     }
     finally {
-      f.system.shutdown()
+      Await.result(system.terminate(), Duration.Inf)
     }
   }
 

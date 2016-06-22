@@ -1,8 +1,8 @@
 package mesosphere.marathon.api
 
-import gnieh.diffson.{ Operation, JsonDiff, Add, Copy }
-import org.scalatest.{ Matchers, Assertions }
-import play.api.libs.json.{ JsArray, JsObject, JsNull, JsValue, Format, Json, Writes }
+import gnieh.diffson.playJson._
+import org.scalatest.{ Assertions, Matchers }
+import play.api.libs.json.{ Format, JsArray, JsNull, JsObject, JsValue, Json, Writes }
 
 import scala.collection.Map
 
@@ -47,7 +47,7 @@ object JsonTestHelper extends Assertions with Matchers {
     }
 
     def containsEverythingInJsonString(expected: String): Unit = {
-      val diff = JsonDiff.diff(expected, actual)
+      val diff = JsonDiff.diff(expected, actual, remember = false)
       require(diff.ops.forall(isAddition), s"unexpected differences in actual json:\n$actual\nexpected:\n$expected\n${diff.ops.filter(!isAddition(_))}")
     }
 
@@ -56,7 +56,7 @@ object JsonTestHelper extends Assertions with Matchers {
     }
 
     def correspondsToJsonString(expected: String): Unit = {
-      val diff = JsonDiff.diff(expected, actual)
+      val diff = JsonDiff.diff(expected, actual, remember = false)
       require(diff.ops.isEmpty, s"unexpected differences in actual json:\n$actual\nexpected:\n$expected\n$diff")
     }
 

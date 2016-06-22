@@ -1,6 +1,6 @@
 package mesosphere.marathon.state
 
-import mesosphere.marathon.{ PrePostDriverCallback, MarathonSchedulerService }
+import mesosphere.marathon.PrePostDriverCallback
 import org.slf4j.LoggerFactory
 
 import scala.collection.concurrent.TrieMap
