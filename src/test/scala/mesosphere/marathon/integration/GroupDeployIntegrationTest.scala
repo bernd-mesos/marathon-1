@@ -325,7 +325,8 @@ class GroupDeployIntegrationTest
       val db = appProxy("/test/db".toTestPath, version, 1)
       val service = appProxy("/test/service".toTestPath, version, 1, dependencies = Set(db.id))
       val frontend = appProxy("/test/frontend1".toTestPath, version, 1, dependencies = Set(service.id))
-      (GroupUpdate("/test".toTestPath, Set(db, service, frontend)),
+      (
+        GroupUpdate("/test".toTestPath, Set(db, service, frontend)),
         appProxyCheck(db.id, version, state = initialState).withHealthAction(storeFirst),
         appProxyCheck(service.id, version, state = initialState).withHealthAction(storeFirst),
         appProxyCheck(frontend.id, version, state = initialState).withHealthAction(storeFirst))

@@ -104,8 +104,7 @@ class LeaderIntegrationTest extends IntegrationFunSuite
         val apiLeader: String = marathon.leader().value.leader
         val tombstoneData = zooKeeper.getData(config.zkPath + "/leader/member_-00000000", false, stat.get)
         new String(tombstoneData, "UTF-8") should equal(apiLeader)
-      }
-      finally {
+      } finally {
         zooKeeper.close()
       }
     }

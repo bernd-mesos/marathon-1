@@ -73,7 +73,7 @@ class MarathonSchedulerActor private (
       log.info("Starting scheduler actor")
       deploymentRepository.all() onComplete {
         case Success(deployments) => self ! RecoverDeployments(deployments)
-        case Failure(_)           => self ! RecoverDeployments(Nil)
+        case Failure(_) => self ! RecoverDeployments(Nil)
       }
 
     case RecoverDeployments(deployments) =>
@@ -92,7 +92,7 @@ class MarathonSchedulerActor private (
     // FIXME: When we get this while recovering deployments, we become active anyway
     // and drop this message.
 
-    case _                            => stash()
+    case _ => stash()
   }
 
   //TODO: fix style issue and enable this scalastyle check
@@ -188,7 +188,7 @@ class MarathonSchedulerActor private (
       lockedApps --= plan.affectedApplicationIds
       deploymentFailed(plan, reason)
 
-    case AppScaled(id)         => lockedApps -= id
+    case AppScaled(id) => lockedApps -= id
 
     case TasksKilled(appId, _) => lockedApps -= appId
 
@@ -237,8 +237,7 @@ class MarathonSchedulerActor private (
       unstashAll()
       context.become(started)
       true
-    }
-    else {
+    } else {
       false
     }
   }
@@ -255,8 +254,7 @@ class MarathonSchedulerActor private (
     if (conflicts.isEmpty) {
       lockedApps ++= appIds
       Try(f)
-    }
-    else {
+    } else {
       Failure(new LockingFailedException("Failed to acquire locks."))
     }
   }
@@ -325,8 +323,7 @@ class MarathonSchedulerActor private (
     eventBus.publish(DeploymentFailed(plan.id, plan))
     if (reason.isInstanceOf[DeploymentCanceledException]) {
       deploymentRepository.expunge(plan.id).map(_ => ())
-    }
-    else {
+    } else {
       Future.successful(())
     }
   }
@@ -462,7 +459,7 @@ class SchedulerActions(
   def scaleApps(): Future[Unit] = {
     appRepository.allPathIds().map(_.toSet).andThen {
       case Success(appIds) => for (appId <- appIds) schedulerActor ! ScaleApp(appId)
-      case Failure(t)      => log.warn("Failed to get task names", t)
+      case Failure(t) => log.warn("Failed to get task names", t)
     }.map(_ => ())
   }
 
@@ -546,12 +543,10 @@ class SchedulerActions(
       if (toQueue > 0) {
         log.info(s"Queueing $toQueue new tasks for ${app.id} ($queuedOrRunning queued or running)")
         launchQueue.add(app, toQueue)
-      }
-      else {
+      } else {
         log.info(s"Already queued or started $queuedOrRunning tasks for ${app.id}. Not scaling.")
       }
-    }
-    else if (targetCount < launchedCount) {
+    } else if (targetCount < launchedCount) {
       log.info(s"Scaling ${app.id} from $launchedCount down to $targetCount instances")
       launchQueue.purge(app.id)
 
@@ -562,8 +557,7 @@ class SchedulerActions(
       val taskIds: Iterable[TaskID] = toKill.flatMap(_.launchedMesosId)
       log.info(s"Killing tasks: ${taskIds.map(_.getValue)}")
       taskIds.foreach(driver.killTask)
-    }
-    else {
+    } else {
       log.info(s"Already running ${app.instances} instances of ${app.id}. Not scaling.")
     }
   }
@@ -571,7 +565,7 @@ class SchedulerActions(
   def scale(driver: SchedulerDriver, appId: PathId): Future[Unit] = {
     currentAppVersion(appId).map {
       case Some(app) => scale(driver, app)
-      case _         => log.warn(s"App $appId does not exist. Not scaling.")
+      case _ => log.warn(s"App $appId does not exist. Not scaling.")
     }
   }
 
@@ -584,7 +578,7 @@ private[this] object SchedulerActions {
 
     def opt[T](a: Option[T], b: Option[T], default: Boolean)(fn: (T, T) => Boolean): Boolean = (a, b) match {
       case (Some(av), Some(bv)) => fn(av, bv)
-      case _                    => default
+      case _ => default
     }
     opt(a.mesosStatus, b.mesosStatus, a.mesosStatus.isDefined) { (aStatus, bStatus) =>
       runningOrStaged(bStatus.getState) compareTo runningOrStaged(aStatus.getState) match {

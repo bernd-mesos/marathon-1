@@ -7,7 +7,13 @@ import com.wix.accord.combinators.GeneralPurposeCombinators
 import com.wix.accord.dsl._
 import mesosphere.marathon.Protos.Constraint
 import mesosphere.marathon.Protos.HealthCheckDefinition.Protocol
-import mesosphere.marathon.api.serialization.{ ContainerSerializer, EnvVarRefSerializer, PortDefinitionSerializer, ResidencySerializer, SecretsSerializer }
+import mesosphere.marathon.api.serialization.{
+  ContainerSerializer,
+  EnvVarRefSerializer,
+  PortDefinitionSerializer,
+  ResidencySerializer,
+  SecretsSerializer
+}
 import mesosphere.marathon.api.v2.Validation._
 import mesosphere.marathon.core.externalvolume.ExternalVolumes
 import mesosphere.marathon.core.plugin.PluginManager
@@ -344,7 +350,7 @@ case class AppDefinition(
   override def equals(obj: Any): Boolean = {
     obj match {
       case that: AppDefinition => (that eq this) || (that.id == id && that.version == version)
-      case _                   => false
+      case _ => false
     }
   }
 
@@ -662,29 +668,26 @@ object AppDefinition extends GeneralPurposeCombinators {
     override def apply(c: Constraint): Result = {
       if (!c.hasField || !c.hasOperator) {
         Failure(Set(RuleViolation(c, "Missing field and operator", None)))
-      }
-      else {
+      } else {
         c.getOperator match {
           case UNIQUE =>
             if (c.hasValue && c.getValue.nonEmpty) {
               Failure(Set(RuleViolation(c, "Value specified but not used", None)))
-            }
-            else {
+            } else {
               Success
             }
           case CLUSTER =>
             if (c.hasValue && c.getValue.nonEmpty) {
               Success
-            }
-            else {
+            } else {
               Failure(Set(RuleViolation(c, "Missing value", None)))
             }
           case GROUP_BY =>
             if (!c.hasValue || (c.hasValue && c.getValue.nonEmpty && Try(c.getValue.toInt).isSuccess)) {
               Success
-            }
-            else {
-              Failure(Set(RuleViolation(c,
+            } else {
+              Failure(Set(RuleViolation(
+                c,
                 "Value was specified but is not a number",
                 Some("GROUP_BY may either have no value or an integer value"))))
             }
@@ -694,20 +697,20 @@ object AppDefinition extends GeneralPurposeCombinators {
                 case util.Success(_) =>
                   Success
                 case util.Failure(e) =>
-                  Failure(Set(RuleViolation(c,
+                  Failure(Set(RuleViolation(
+                    c,
                     s"'${c.getValue}' is not a valid regular expression",
                     Some(s"${c.getValue}\n${e.getMessage}"))))
               }
-            }
-            else {
+            } else {
               Failure(Set(RuleViolation(c, "A regular expression value must be provided", None)))
             }
           case MAX_PER =>
             if (c.hasValue && c.getValue.nonEmpty && Try(c.getValue.toInt).isSuccess) {
               Success
-            }
-            else {
-              Failure(Set(RuleViolation(c,
+            } else {
+              Failure(Set(RuleViolation(
+                c,
                 "Value was specified but is not a number",
                 Some("MAX_PER may have an integer value"))))
             }
@@ -723,7 +726,7 @@ object AppDefinition extends GeneralPurposeCombinators {
     isTrue("Health check port indices must address an element of the ports array or container port mappings.") { hc =>
       hc.protocol == Protocol.COMMAND || (hc.portIndex match {
         case Some(idx) => hostPortsIndices contains idx
-        case None      => hc.port.nonEmpty || (hostPortsIndices.length == 1 && hostPortsIndices.head == 0)
+        case None => hc.port.nonEmpty || (hostPortsIndices.length == 1 && hostPortsIndices.head == 0)
       })
     }
 

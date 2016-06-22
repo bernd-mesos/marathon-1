@@ -51,7 +51,7 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
       .flatMap { variable =>
         futureToFuture(state.expunge(variable))
           .map{
-            case java.lang.Boolean.TRUE  => true
+            case java.lang.Boolean.TRUE => true
             case java.lang.Boolean.FALSE => false
           }
       }
@@ -82,7 +82,7 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
   private[this] def throwOnNull[T](t: T): T = {
     Option(t) match {
       case Some(value) => value
-      case None        => throw new StoreCommandFailedException("Null returned from state store!")
+      case None => throw new StoreCommandFailedException("Null returned from state store!")
     }
   }
 

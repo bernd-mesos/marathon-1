@@ -104,7 +104,8 @@ class HttpEventActorTest extends MarathonSpec with Mockito with GivenWhenThen wi
   implicit var system: ActorSystem = _
 
   before {
-    system = ActorSystem("test-system",
+    system = ActorSystem(
+      "test-system",
       ConfigFactory.parseString("""akka.loggers = ["akka.testkit.TestEventListener"]""")
     )
     clock = ConstantClock()

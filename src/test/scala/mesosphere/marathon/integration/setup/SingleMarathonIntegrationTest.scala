@@ -132,8 +132,7 @@ trait SingleMarathonIntegrationTest
 
       waitForCleanSlateInMesos()
       log.info("Setting up local mesos/marathon infrastructure: done.")
-    }
-    else {
+    } else {
       log.info("Using already running Marathon at {}", config.marathonUrl)
     }
 
@@ -180,14 +179,12 @@ trait SingleMarathonIntegrationTest
       if (messageFn(log)) {
         result = Some(log)
         true
-      }
-      else false
+      } else false
     }
     try {
       ProcessKeeper.addCheck(process, message)
       WaitTestSupport.waitFor(s"Log message in process $process", maxWait)(result)
-    }
-    finally {
+    } finally {
       ProcessKeeper.removeCheck(process)
     }
   }
@@ -211,7 +208,8 @@ trait SingleMarathonIntegrationTest
     val file = File.createTempFile("appProxy", ".sh")
     file.deleteOnExit()
 
-    FileUtils.write(file,
+    FileUtils.write(
+      file,
       s"""#!/bin/sh
           |set -x
           |exec $appProxyMainInvocationImpl $$*""".stripMargin)

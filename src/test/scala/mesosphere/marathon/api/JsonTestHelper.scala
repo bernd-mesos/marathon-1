@@ -28,7 +28,7 @@ object JsonTestHelper extends Assertions with Matchers {
     case JsObject(fields) =>
       val withoutNullValues: Map[String, JsValue] = fields.filter {
         case (_, JsNull) => false
-        case _           => true
+        case _ => true
       }
       val filterSubValues = withoutNullValues.mapValues {
         case v => removeNullFieldValues(v)
@@ -43,7 +43,7 @@ object JsonTestHelper extends Assertions with Matchers {
   case class AssertThatJsonString(actual: String) {
     private[this] def isAddition(op: Operation): Boolean = op match {
       case _: Add | _: Copy => true
-      case _: Operation     => false
+      case _: Operation => false
     }
 
     def containsEverythingInJsonString(expected: String): Unit = {

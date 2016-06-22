@@ -59,7 +59,7 @@ class MarathonScheduler @Inject() (
     offers.asScala.foreach { offer =>
       val processFuture = offerProcessor.processOffer(offer)
       processFuture.onComplete {
-        case scala.util.Success(_)           => log.debug(s"Finished processing offer '${offer.getId.getValue}'")
+        case scala.util.Success(_) => log.debug(s"Finished processing offer '${offer.getId.getValue}'")
         case scala.util.Failure(NonFatal(e)) => log.error(s"while processing offer '${offer.getId.getValue}'", e)
       }
     }
@@ -121,7 +121,7 @@ class MarathonScheduler @Inject() (
     // For now the frameworkId is removed based on the error message.
     val removeFrameworkId = message match {
       case "Framework has been removed" => true
-      case _: String                    => false
+      case _: String => false
     }
     suicide(removeFrameworkId)
   }
@@ -147,10 +147,9 @@ class MarathonScheduler @Inject() (
       val exitCode = 9
       try {
         Await.result(Future(sys.exit(exitCode)), 10.seconds)
-      }
-      catch {
+      } catch {
         case _: TimeoutException => log.error("Shutdown timeout")
-        case NonFatal(t)         => log.error("Exception while committing suicide", t)
+        case NonFatal(t) => log.error("Exception while committing suicide", t)
       }
 
       log.info("Halting JVM")

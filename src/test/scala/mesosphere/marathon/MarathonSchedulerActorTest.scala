@@ -51,8 +51,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
       schedulerActor ! LocalLeadershipEvent.ElectedAsLeader
       awaitAssert(verify(hcManager).reconcileWith(app.id), 5.seconds, 10.millis)
       verify(deploymentRepo, times(1)).all()
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -77,8 +76,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
       awaitAssert({
         verify(driver).killTask(TaskID("task_a"))
       }, 5.seconds, 10.millis)
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -101,8 +99,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
       schedulerActor ! ScaleApps
 
       awaitAssert(verify(queue).add(app, 1), 5.seconds, 10.millis)
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -125,8 +122,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
       awaitAssert(verify(queue).add(app, 1), 5.seconds, 10.millis)
 
       expectMsg(5.seconds, AppScaled(app.id))
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -177,8 +173,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
 
       // KillTasks does no longer scale
       verify(repo, times(0)).store(any[AppDefinition])
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -218,8 +213,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
       expectMsg(5.seconds, TasksKilled(app.id, Set(taskA.taskId)))
 
       awaitAssert(verify(queue).add(app, 1), 5.seconds, 10.millis)
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -257,8 +251,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
       answer.id should be(plan.id)
 
       system.eventStream.unsubscribe(probe.ref)
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -306,8 +299,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
       Mockito.verify(queue, timeout(1000)).resetDelay(app.copy(instances = 0))
 
       system.eventStream.unsubscribe(probe.ref)
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -343,8 +335,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
 
       answer.cmd should equal(Deploy(plan))
       answer.reason.isInstanceOf[AppLockedException] should be(true)
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -393,8 +384,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
       val answer = expectMsgType[CommandFailed]
       answer.cmd should equal(Deploy(plan))
       answer.reason.isInstanceOf[AppLockedException] should be(true)
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -421,8 +411,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
 
       val answer = expectMsgType[DeploymentStarted]
 
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }
@@ -467,8 +456,7 @@ class MarathonSchedulerActorTest extends MarathonActorSupport
 
       answer.reason.isInstanceOf[TimeoutException] should be(true)
       answer.reason.getMessage should be
-    }
-    finally {
+    } finally {
       stopActor(schedulerActor)
     }
   }

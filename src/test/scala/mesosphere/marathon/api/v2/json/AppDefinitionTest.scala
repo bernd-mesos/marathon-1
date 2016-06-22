@@ -36,9 +36,10 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
         case f: Failure =>
           val violations = ValidationHelper.getAllRuleConstrains(f)
 
-          assert(violations.exists { v =>
-            v.path.contains(path) && v.message == template
-          },
+          assert(
+            violations.exists { v =>
+              v.path.contains(path) && v.message == template
+            },
             s"Violations:\n${violations.mkString}"
           )
       }
@@ -49,9 +50,10 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
         case Success =>
         case f: Failure =>
           val violations = ValidationHelper.getAllRuleConstrains(f)
-          assert(!violations.exists { v =>
-            v.path.contains(path) && v.message == template
-          },
+          assert(
+            !violations.exists { v =>
+              v.path.contains(path) && v.message == template
+            },
             s"Violations:\n${violations.mkString}"
           )
       }
@@ -374,7 +376,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       fetch = Seq(FetchUri(uri = "http://example.com/valid"), FetchUri(uri = "/root/file"))
     )
 
-    shouldNotViolate(app,
+    shouldNotViolate(
+      app,
       "/fetch(1)",
       "URI has invalid syntax."
     )
@@ -820,7 +823,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   }
 
   test("Residency serialization (toProto) and deserialization (fromProto)") {
-    val app = AppDefinition(id = "/test".toRootPath,
+    val app = AppDefinition(
+      id = "/test".toRootPath,
       residency = Some(Residency(
         relaunchEscalationTimeoutSeconds = 3600,
         taskLostBehavior = Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER)))

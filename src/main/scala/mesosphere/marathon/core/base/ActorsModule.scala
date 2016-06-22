@@ -1,6 +1,6 @@
 package mesosphere.marathon.core.base
 
-import akka.actor.{ActorRefFactory, ActorSystem}
+import akka.actor.{ ActorRefFactory, ActorSystem }
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.Await

@@ -49,8 +49,9 @@ class QueueResource @Inject() (
 
   @DELETE
   @Path("""{appId:.+}/delay""")
-  def resetDelay(@PathParam("appId") id: String,
-                 @Context req: HttpServletRequest): Response = authenticated(req) { implicit identity =>
+  def resetDelay(
+    @PathParam("appId") id: String,
+    @Context req: HttpServletRequest): Response = authenticated(req) { implicit identity =>
     val appId = id.toRootPath
     val maybeApp = launchQueue.list.find(_.runSpec.id == appId).map(_.runSpec)
     withAuthorization(UpdateRunSpec, maybeApp, notFound(s"Application $appId not found in tasks queue.")) { app =>
