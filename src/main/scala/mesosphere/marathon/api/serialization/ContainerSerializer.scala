@@ -37,8 +37,8 @@ object ContainerSerializer {
 
     container.volumes.foreach {
       case pv: PersistentVolume => // PersistentVolumes are handled differently
-      case ev: ExternalVolume   => ExternalVolumes.build(builder, ev) // this also adds the volume
-      case dv: DockerVolume     => builder.addVolumes(VolumeSerializer.toMesos(dv))
+      case ev: ExternalVolume => ExternalVolumes.build(builder, ev) // this also adds the volume
+      case dv: DockerVolume => builder.addVolumes(VolumeSerializer.toMesos(dv))
     }
 
     builder.build

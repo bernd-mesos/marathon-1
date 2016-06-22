@@ -82,8 +82,7 @@ class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with 
       assert(msg.master == masterInfo.getHostname)
       assert(msg.eventType == "scheduler_registered_event")
       assert(mesosLeaderInfo.currentLeaderUrl.get == "http://some_host:5050/")
-    }
-    finally {
+    } finally {
       eventBus.unsubscribe(probe.ref)
     }
   }
@@ -107,8 +106,7 @@ class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with 
       assert(msg.master == masterInfo.getHostname)
       assert(msg.eventType == "scheduler_reregistered_event")
       assert(mesosLeaderInfo.currentLeaderUrl.get == "http://some_host:5050/")
-    }
-    finally {
+    } finally {
       eventBus.unsubscribe(probe.ref)
     }
   }
@@ -125,8 +123,7 @@ class MarathonSchedulerTest extends MarathonActorSupport with MarathonSpec with 
       val msg = probe.expectMsgType[SchedulerDisconnectedEvent]
 
       assert(msg.eventType == "scheduler_disconnected_event")
-    }
-    finally {
+    } finally {
       eventBus.unsubscribe(probe.ref)
     }
   }

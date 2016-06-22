@@ -91,7 +91,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf)
   def provideMesosLeaderInfo(): MesosLeaderInfo = {
     conf.mesosLeaderUiUrl.get match {
       case someUrl @ Some(_) => ConstMesosLeaderInfo(someUrl)
-      case None              => new MutableMesosLeaderInfo
+      case None => new MutableMesosLeaderInfo
     }
   }
 
@@ -113,10 +113,11 @@ class MarathonModule(conf: MarathonConf, http: HttpConf)
   @Named(ModuleNames.HTTP_EVENT_STREAM)
   @Provides
   @Singleton
-  def provideHttpEventStreamActor(system: ActorSystem,
-                                  electionService: ElectionService,
-                                  @Named(EventModule.busName) eventBus: EventStream,
-                                  metrics: HttpEventStreamActorMetrics): ActorRef = {
+  def provideHttpEventStreamActor(
+    system: ActorSystem,
+    electionService: ElectionService,
+    @Named(EventModule.busName) eventBus: EventStream,
+    metrics: HttpEventStreamActorMetrics): ActorRef = {
     val outstanding = conf.eventStreamMaxOutstandingMessages.get.getOrElse(50)
     def handleStreamProps(handle: HttpEventStreamHandle): Props =
       Props(new HttpEventStreamHandleActor(handle, eventBus, outstanding))
@@ -133,7 +134,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf)
 
       val authInfo = (conf.zkUsername, conf.zkPassword) match {
         case (Some(user), Some(pass)) => Some(AuthInfo.digest(user, pass))
-        case _                        => None
+        case _ => None
       }
 
       val connector = NativeConnector(conf.zkHosts, None, sessionTimeout, new JavaTimer(isDaemon = true), authInfo)
@@ -154,9 +155,9 @@ class MarathonModule(conf: MarathonConf, http: HttpConf)
       new MesosStateStore(state, conf.zkTimeoutDuration)
     }
     conf.internalStoreBackend.get match {
-      case Some("zk")              => directZK()
-      case Some("mesos_zk")        => mesosZK()
-      case Some("mem")             => new InMemoryStore()
+      case Some("zk") => directZK()
+      case Some("mesos_zk") => mesosZK()
+      case Some("mem") => new InMemoryStore()
       case backend: Option[String] => throw new IllegalArgumentException(s"Storage backend $backend not known!")
     }
   }

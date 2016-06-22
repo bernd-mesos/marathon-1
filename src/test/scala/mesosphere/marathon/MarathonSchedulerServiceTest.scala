@@ -259,8 +259,7 @@ class MarathonSchedulerServiceTest
 
     try {
       schedulerService.startLeadership()
-    }
-    catch {
+    } catch {
       case _: TimeoutException =>
         schedulerService.stopLeadership()
     }
@@ -292,8 +291,7 @@ class MarathonSchedulerServiceTest
 
     try {
       schedulerService.startLeadership()
-    }
-    catch {
+    } catch {
       case e: Exception => schedulerService.stopLeadership()
     }
 

@@ -41,7 +41,7 @@ class InMemoryStore(implicit val ec: ExecutionContext = ExecutionContext.Implici
   override def delete(key: ID): Future[Boolean] = {
     entities.get(key) match {
       case Some(value) => Future.successful(entities.remove(key).isDefined)
-      case None        => Future.successful(false)
+      case None => Future.successful(false)
     }
   }
 

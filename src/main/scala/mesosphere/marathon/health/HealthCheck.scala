@@ -141,9 +141,9 @@ object HealthCheck {
         val hasPath = hc.path.isDefined
         if (hc.protocol match {
           case Protocol.COMMAND => hasCommand && !hasPath && hc.port.isEmpty
-          case Protocol.HTTP    => !hasCommand && eitherPortIndexOrPort
-          case Protocol.TCP     => !hasCommand && !hasPath && eitherPortIndexOrPort
-          case _                => true
+          case Protocol.HTTP => !hasCommand && eitherPortIndexOrPort
+          case Protocol.TCP => !hasCommand && !hasPath && eitherPortIndexOrPort
+          case _ => true
         }) Success else Failure(Set(RuleViolation(hc, s"HealthCheck is having parameters violation ${hc.protocol} protocol.", None)))
       }
     }

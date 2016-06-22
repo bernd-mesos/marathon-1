@@ -46,8 +46,7 @@ private class LeadershipCoordinatorActor(var whenLeaderActors: Set[ActorRef])
         ackStartRef ! PreparationMessages.Prepared(self)
       }
       active
-    }
-    else {
+    } else {
       LoggingReceive.withLabel("preparingForStart") {
         case PreparationMessages.PrepareForStart =>
           context.become(preparingForStart(ackStartRefs + sender(), whenLeaderActorsWithoutAck))

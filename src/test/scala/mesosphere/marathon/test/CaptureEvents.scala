@@ -33,8 +33,7 @@ class CaptureEvents(eventStream: EventStream) {
 
     try {
       block
-    }
-    finally {
+    } finally {
       eventStream.unsubscribe(captureEventsActor)
       captureEventsActor ! PoisonPill
       val probe = TestProbe()

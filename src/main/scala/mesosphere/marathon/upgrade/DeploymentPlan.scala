@@ -24,9 +24,10 @@ sealed trait DeploymentAction {
 final case class StartApplication(app: AppDefinition, scaleTo: Int) extends DeploymentAction
 
 // application is started, but the instance count should be changed
-final case class ScaleApplication(app: AppDefinition,
-                                  scaleTo: Int,
-                                  sentencedToDeath: Option[Iterable[Task]] = None) extends DeploymentAction
+final case class ScaleApplication(
+  app: AppDefinition,
+  scaleTo: Int,
+  sentencedToDeath: Option[Iterable[Task]] = None) extends DeploymentAction
 
 // application is started, but shall be completely stopped
 final case class StopApplication(app: AppDefinition) extends DeploymentAction
@@ -99,12 +100,12 @@ final case class DeploymentPlan(
     }
     def actionString(a: DeploymentAction): String = a match {
       case StartApplication(app, scale) => s"Start(${appString(app)}, instances=$scale)"
-      case StopApplication(app)         => s"Stop(${appString(app)})"
+      case StopApplication(app) => s"Stop(${appString(app)})"
       case ScaleApplication(app, scale, toKill) =>
         val killTasksString =
           toKill.filter(_.nonEmpty).map(", killTasks=" + _.map(_.taskId.idString).mkString(",")).getOrElse("")
         s"Scale(${appString(app)}, instances=$scale$killTasksString)"
-      case RestartApplication(app)     => s"Restart(${appString(app)})"
+      case RestartApplication(app) => s"Restart(${appString(app)})"
       case ResolveArtifacts(app, urls) => s"Resolve(${appString(app)}, $urls})"
     }
     val stepString =
@@ -114,8 +115,7 @@ final case class DeploymentPlan(
           .zipWithIndex
           .map { case (stepsString, index) => s"step ${index + 1}:\n$stepsString" }
           .mkString("\n", "\n", "")
-      }
-      else " NO STEPS"
+      } else " NO STEPS"
     s"DeploymentPlan $version$stepString\n"
   }
 
@@ -204,7 +204,7 @@ object DeploymentPlan {
     * from the topology of the target group's dependency graph.
     */
   def dependencyOrderedSteps(original: Group, target: Group,
-                             toKill: Map[PathId, Iterable[Task]]): Seq[DeploymentStep] = {
+    toKill: Map[PathId, Iterable[Task]]): Seq[DeploymentStep] = {
     val originalApps: Map[PathId, AppDefinition] =
       original.transitiveApps.map(app => app.id -> app).toMap
 
