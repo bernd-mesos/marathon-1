@@ -1,6 +1,6 @@
 package mesosphere.marathon.integration.setup
 
-import mesosphere.marathon.api.v2.json.{ AppUpdate, AppUpdate$ }
+import mesosphere.marathon.api.v2.json.AppUpdate
 import mesosphere.marathon.event._
 import mesosphere.marathon.event.http.EventSubscribers
 import mesosphere.marathon.state.{ Group, Timestamp }

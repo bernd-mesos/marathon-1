@@ -25,8 +25,6 @@ case class EnvVarSecretRef(secret: String) extends EnvVarRef with plugin.EnvVarS
 }
 
 object EnvVarValue {
-  import scala.language.implicitConversions
-
   def apply(m: Map[String, String]): Map[String, EnvVarValue] =
     m.map { case (k, v) => k -> v.toEnvVar }
 

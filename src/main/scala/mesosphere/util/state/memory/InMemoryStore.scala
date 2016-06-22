@@ -1,7 +1,6 @@
 package mesosphere.util.state.memory
 
 import mesosphere.marathon.StoreCommandFailedException
-import mesosphere.util.ThreadPoolContext
 import mesosphere.util.state.{ PersistentEntity, PersistentStore }
 
 import scala.collection.concurrent.TrieMap

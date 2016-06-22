@@ -1,6 +1,6 @@
 package mesosphere.marathon.event.http
 
-import java.util.concurrent.{ TimeUnit, Executors }
+import java.util.concurrent.TimeUnit
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.pattern.ask
@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 trait HttpEventConfiguration extends ScallopConf {
 

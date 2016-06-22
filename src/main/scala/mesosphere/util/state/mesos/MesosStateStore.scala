@@ -2,14 +2,13 @@ package mesosphere.util.state.mesos
 
 import mesosphere.marathon.StoreCommandFailedException
 import mesosphere.util.BackToTheFuture.Timeout
-import mesosphere.util.ThreadPoolContext
 import mesosphere.util.state.{ PersistentEntity, PersistentStore }
 import org.apache.mesos.state.{ State, Variable }
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration.Duration
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.control.NonFatal
 
 class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {

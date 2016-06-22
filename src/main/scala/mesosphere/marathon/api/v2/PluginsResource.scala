@@ -9,7 +9,7 @@ import mesosphere.marathon.MarathonConf
 import mesosphere.marathon.api.v2.json.Formats._
 import mesosphere.marathon.api.{ MarathonMediaType, RequestFacade, ResponseFacade, RestResource }
 import mesosphere.marathon.core.plugin.PluginDefinitions
-import mesosphere.marathon.plugin.http.{ HttpRequest, HttpRequestHandler, HttpResponse }
+import mesosphere.marathon.plugin.http.HttpRequestHandler
 
 @Path("v2/plugins")
 class PluginsResource @Inject() (val config: MarathonConf,

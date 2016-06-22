@@ -9,10 +9,11 @@ import mesosphere.marathon.event.{ SchedulerRegisteredEvent, SchedulerReregister
 import mesosphere.marathon.{ MarathonSchedulerDriverHolder, MarathonSpec }
 import org.apache.mesos.SchedulerDriver
 import org.mockito.Mockito
-import org.scalatest.{ Matchers, GivenWhenThen }
+import org.scalatest.{ GivenWhenThen, Matchers }
 import rx.lang.scala.Subject
 import rx.lang.scala.subjects.PublishSubject
 
+import scala.concurrent.Await
 import scala.concurrent.duration._
 
 class ReviveOffersActorTest extends MarathonSpec with GivenWhenThen with Matchers {
@@ -301,8 +302,7 @@ class ReviveOffersActorTest extends MarathonSpec with GivenWhenThen with Matcher
   }
 
   after {
-    actorSystem.shutdown()
-    actorSystem.awaitTermination()
+    Await.result(actorSystem.terminate(), Duration.Inf)
   }
 
   class Fixture(val repetitions: Int = 1) {

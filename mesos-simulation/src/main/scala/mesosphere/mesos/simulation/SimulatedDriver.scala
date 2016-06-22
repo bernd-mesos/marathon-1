@@ -10,6 +10,8 @@ import org.apache.mesos.SchedulerDriver
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConversions._
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 /**
   * The facade to the mesos simulation.
@@ -97,7 +99,7 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
     system match {
       case None => Status.DRIVER_NOT_STARTED
       case Some(sys) =>
-        sys.shutdown()
+        sys.terminate()
         Status.DRIVER_ABORTED
     }
   }
@@ -111,7 +113,7 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
     system match {
       case None => Status.DRIVER_NOT_STARTED
       case Some(sys) =>
-        sys.awaitTermination()
+        Await.result(sys.whenTerminated, Duration.Inf)
         driverActorRefOpt = None
         system = None
         log.info("Stopped simulated Mesos")

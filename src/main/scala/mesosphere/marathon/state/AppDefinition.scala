@@ -7,13 +7,7 @@ import com.wix.accord.combinators.GeneralPurposeCombinators
 import com.wix.accord.dsl._
 import mesosphere.marathon.Protos.Constraint
 import mesosphere.marathon.Protos.HealthCheckDefinition.Protocol
-import mesosphere.marathon.api.serialization.{
-  ContainerSerializer,
-  EnvVarRefSerializer,
-  PortDefinitionSerializer,
-  ResidencySerializer,
-  SecretsSerializer
-}
+import mesosphere.marathon.api.serialization.{ ContainerSerializer, EnvVarRefSerializer, PortDefinitionSerializer, ResidencySerializer, SecretsSerializer }
 import mesosphere.marathon.api.v2.Validation._
 import mesosphere.marathon.core.externalvolume.ExternalVolumes
 import mesosphere.marathon.core.plugin.PluginManager
@@ -23,11 +17,9 @@ import mesosphere.marathon.health.HealthCheck
 import mesosphere.marathon.plugin.validation.RunSpecValidator
 import mesosphere.marathon.state.AppDefinition.VersionInfo.{ FullVersionInfo, OnlyVersion }
 import mesosphere.marathon.state.AppDefinition.{ Labels, VersionInfo }
-import mesosphere.marathon.state.Container.Docker.PortMapping
 import mesosphere.marathon.{ Features, Protos, plugin }
 import mesosphere.mesos.TaskBuilder
 import mesosphere.mesos.protos.{ Resource, ScalarResource }
-import org.apache.mesos.Protos.ContainerInfo.DockerInfo
 import org.apache.mesos.{ Protos => mesos }
 
 import scala.collection.JavaConverters._

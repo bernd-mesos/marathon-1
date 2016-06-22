@@ -1,12 +1,9 @@
 package mesosphere.marathon.state
 
+import com.wix.accord._
+import com.wix.accord.dsl._
 import mesosphere.marathon.api.v2.Validation.isTrue
 import mesosphere.marathon.plugin
-
-import scala.language.implicitConversions
-
-import com.wix.accord.dsl._
-import com.wix.accord._
 
 case class PathId(path: List[String], absolute: Boolean = true) extends Ordered[PathId] with plugin.PathId {
 

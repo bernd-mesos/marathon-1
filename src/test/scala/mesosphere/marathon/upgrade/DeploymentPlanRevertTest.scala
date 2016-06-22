@@ -1,11 +1,9 @@
 package mesosphere.marathon.upgrade
 
 import mesosphere.marathon.MarathonSpec
+import mesosphere.marathon.state.PathId._
 import mesosphere.marathon.state._
 import org.scalatest.{ GivenWhenThen, Matchers }
-import mesosphere.marathon.state.PathId._
-
-import scala.collection.SortedSet
 
 class DeploymentPlanRevertTest extends MarathonSpec with Matchers with GivenWhenThen {
   private def normalizeVersions(group: Group): Group = {

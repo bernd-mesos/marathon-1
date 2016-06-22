@@ -5,8 +5,6 @@ import java.io.File
 import mesosphere.marathon.state.PathId
 import org.scalatest.ConfigMap
 
-import scala.util.Try
-
 /**
   * Configuration used in integration test.
   * Pass parameter from scala test by command line and create via ConfigMap.
