@@ -1,0 +1,42 @@
+{
+  "container": {
+    "type": "MESOS",
+    "appc": {
+      "image": "acme.biz/appc/ubuntu1510",
+      "labels": {"version" : "0.0.1"}
+    },
+    "forcePullImage": false,
+    "volumes" : [
+      {
+        "containerPath": "/tmp",
+        "hostPath": "tmp",
+        "mode": "RW"
+      },
+      {
+        "containerPath": "/root",
+        "hostPath": "/root",
+        "mode": "RW"
+      },
+      {
+        "containerPath": "/etc",
+        "hostPath": "/etc",
+        "mode": "RO"
+      },
+      {
+        "containerPath": "/var/run",
+        "hostPath": "/var/run",
+        "mode": "RW"
+      },
+      {
+        "containerPath": "/var/tmp",
+        "hostPath": "/var/tmp",
+        "mode": "RW"
+      }
+    ]
+  },
+  "id": "ubuntu15",
+  "instances": 1,
+  "cpus": 0.5,
+  "mem": 512,
+  "cmd": "while sleep 10; do date -u +%T; done"
+}

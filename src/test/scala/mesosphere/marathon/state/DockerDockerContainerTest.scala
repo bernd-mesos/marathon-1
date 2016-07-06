@@ -6,7 +6,7 @@ import mesosphere.marathon.api.JsonTestHelper
 import mesosphere.marathon.api.serialization.{
   PortMappingSerializer,
   VolumeSerializer,
-  DockerSerializer,
+  DockerDockerSerializer,
   ContainerSerializer
 }
 import com.wix.accord._
@@ -17,7 +17,7 @@ import play.api.libs.json.Json
 import scala.collection.immutable.Seq
 import scala.collection.JavaConverters._
 
-class ContainerTest extends MarathonSpec with Matchers {
+class DockerDockerContainerTest extends MarathonSpec with Matchers {
   import mesosphere.marathon.api.v2.json.Formats._
 
   class Fixture {
@@ -26,32 +26,32 @@ class ContainerTest extends MarathonSpec with Matchers {
       DockerVolume("/etc/b", "/var/data/b", mesos.Volume.Mode.RW)
     )
 
-    lazy val container: Container = Container.Docker(
+    lazy val container1 = Container.DockerDocker(
       volumes = volumes,
       image = "group/image"
     )
 
-    lazy val container2: Container = Container.Docker(
+    lazy val container2 = Container.DockerDocker(
       volumes = Nil,
       image = "group/image",
       network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
-      portMappings = Some(Seq(
-        Container.Docker.PortMapping(
+      portMappings = Seq(
+        Container.DockerDocker.PortMapping(
           containerPort = 8080,
           hostPort = Some(32001),
           servicePort = 9000,
-          protocol = Container.Docker.PortMapping.TCP,
+          protocol = Container.DockerDocker.PortMapping.TCP,
           name = Some("http"),
           labels = Map("foo" -> "bar")),
-        Container.Docker.PortMapping(
+        Container.DockerDocker.PortMapping(
           containerPort = 8081,
           hostPort = Some(32002),
           servicePort = 9001,
-          protocol = Container.Docker.PortMapping.UDP)
-      ))
+          protocol = Container.DockerDocker.PortMapping.UDP)
+      )
     )
 
-    lazy val container3: Container = Container.Docker(
+    lazy val container3 = Container.DockerDocker(
       volumes = Nil,
       image = "group/image",
       network = Some(mesos.ContainerInfo.DockerInfo.Network.NONE),
@@ -62,7 +62,7 @@ class ContainerTest extends MarathonSpec with Matchers {
       )
     )
 
-    lazy val container4: Container = Container.Docker(
+    lazy val container4 = Container.DockerDocker(
       volumes = Nil,
       image = "group/image",
       network = Some(mesos.ContainerInfo.DockerInfo.Network.NONE),
@@ -75,83 +75,58 @@ class ContainerTest extends MarathonSpec with Matchers {
       forcePullImage = true
     )
 
-    lazy val container5: Container = Container.Docker(
+    lazy val container5 = Container.DockerDocker(
       volumes = Nil,
       image = "group/image",
       network = Some(mesos.ContainerInfo.DockerInfo.Network.BRIDGE),
-      portMappings = Some(Seq(
-        Container.Docker.PortMapping(
+      portMappings = Seq(
+        Container.DockerDocker.PortMapping(
           containerPort = 8080,
           hostPort = Some(32001),
           servicePort = 9000,
           protocol = "tcp,udp"),
-        Container.Docker.PortMapping(
+        Container.DockerDocker.PortMapping(
           containerPort = 8081,
           hostPort = Some(32002),
           servicePort = 9001,
           protocol = "udp,tcp")
-      ))
-    )
-
-    lazy val mesosContainerWithPersistentVolume: Container = Container.Mesos(
-      volumes = Seq[Volume](
-        PersistentVolume(
-          containerPath = "/local/container/",
-          persistent = PersistentVolumeInfo(1024),
-          mode = mesos.Volume.Mode.RW
-        )
       )
     )
-
-    lazy val mesosContainerWithPersistentVolumeJsonStr =
-      """
-        |{
-        |  "id": "test",
-        |  "container": {
-        |     "type": "MESOS",
-        |     "volumes": [{
-        |        "containerPath": "/local/container/",
-        |        "mode": "RW",
-        |        "persistent": {
-        |           "size": 1024
-        |        }
-        |     }]
-        |  }
-        |}""".stripMargin
-
   }
 
   def fixture(): Fixture = new Fixture
 
   test("ToProto") {
     val f = fixture()
-    val proto = ContainerSerializer.toProto(f.container)
-    assert(mesos.ContainerInfo.Type.DOCKER == proto.getType)
-    assert("group/image" == proto.getDocker.getImage)
-    assert(f.container.volumes == proto.getVolumesList.asScala.map(Volume(_)))
-    assert(proto.getDocker.hasForcePullImage)
-    assert(f.container.docker.get.forcePullImage == proto.getDocker.getForcePullImage)
+
+    val proto1 = ContainerSerializer.toProto(f.container1)
+    assert(mesos.ContainerInfo.Type.DOCKER == proto1.getType)
+    assert("group/image" == proto1.getDocker.getImage)
+    assert(f.container1.volumes == proto1.getVolumesList.asScala.map(Volume(_)))
+    assert(proto1.getDocker.hasForcePullImage)
+    assert(f.container1.forcePullImage == proto1.getDocker.getForcePullImage)
 
     val proto2: mesosphere.marathon.Protos.ExtendedContainerInfo = ContainerSerializer.toProto(f.container2)
     assert(mesos.ContainerInfo.Type.DOCKER == proto2.getType)
     assert("group/image" == proto2.getDocker.getImage)
     assert(f.container2.docker.get.network == Some(proto2.getDocker.getNetwork))
     val portMappings = proto2.getDocker.getPortMappingsList.asScala
-    assert(f.container2.docker.get.portMappings == Some(portMappings.map(PortMappingSerializer.fromProto)))
+    val a: Seq[Container.DockerDocker.PortMapping] = f.container2.docker.get.portMappings
+    assert(f.container2.docker.get.portMappings == portMappings.map(PortMappingSerializer.fromProto).toSeq)
     assert(proto2.getDocker.hasForcePullImage)
-    assert(f.container2.docker.get.forcePullImage == proto2.getDocker.getForcePullImage)
+    assert(f.container2.forcePullImage == proto2.getDocker.getForcePullImage)
 
     val proto3 = ContainerSerializer.toProto(f.container3)
     assert(mesos.ContainerInfo.Type.DOCKER == proto3.getType)
     assert("group/image" == proto3.getDocker.getImage)
-    assert(f.container3.docker.get.network == Some(proto3.getDocker.getNetwork))
-    assert(f.container3.docker.get.privileged == proto3.getDocker.getPrivileged)
-    assert(f.container3.docker.get.parameters.map(_.key) == proto3.getDocker.getParametersList.asScala.map(_.getKey))
+    assert(f.container3.network == Some(proto3.getDocker.getNetwork))
+    assert(f.container3.privileged == proto3.getDocker.getPrivileged)
+    assert(f.container3.parameters.map(_.key) == proto3.getDocker.getParametersList.asScala.map(_.getKey))
     assert(
-      f.container3.docker.get.parameters.map(_.value) == proto3.getDocker.getParametersList.asScala.map(_.getValue)
+      f.container3.parameters.map(_.value) == proto3.getDocker.getParametersList.asScala.map(_.getValue)
     )
     assert(proto3.getDocker.hasForcePullImage)
-    assert(f.container3.docker.get.forcePullImage == proto3.getDocker.getForcePullImage)
+    assert(f.container3.forcePullImage == proto3.getDocker.getForcePullImage)
 
     val proto5 = ContainerSerializer.toProto(f.container5)
     assert(proto5.getDocker.getPortMappingsCount == 2)
@@ -159,17 +134,17 @@ class ContainerTest extends MarathonSpec with Matchers {
 
   test("ToMesos") {
     val f = fixture()
-    val proto = ContainerSerializer.toMesos(f.container)
 
-    assert(mesos.ContainerInfo.Type.DOCKER == proto.getType)
-    assert("group/image" == proto.getDocker.getImage)
-    assert(proto.getDocker.hasForcePullImage)
-    assert(f.container.docker.get.forcePullImage == proto.getDocker.getForcePullImage)
+    val proto1 = ContainerSerializer.toMesos(f.container1)
+    assert(mesos.ContainerInfo.Type.DOCKER == proto1.getType)
+    assert("group/image" == proto1.getDocker.getImage)
+    assert(proto1.getDocker.hasForcePullImage)
+    assert(f.container1.forcePullImage == proto1.getDocker.getForcePullImage)
 
     val proto2 = ContainerSerializer.toMesos(f.container2)
     assert(mesos.ContainerInfo.Type.DOCKER == proto2.getType)
     assert("group/image" == proto2.getDocker.getImage)
-    assert(f.container2.docker.get.network == Some(proto2.getDocker.getNetwork))
+    assert(f.container2.network == Some(proto2.getDocker.getNetwork))
 
     val expectedPortMappings = Seq(
       mesos.ContainerInfo.DockerInfo.PortMapping.newBuilder
@@ -186,19 +161,19 @@ class ContainerTest extends MarathonSpec with Matchers {
 
     assert(expectedPortMappings == proto2.getDocker.getPortMappingsList.asScala)
     assert(proto2.getDocker.hasForcePullImage)
-    assert(f.container2.docker.get.forcePullImage == proto2.getDocker.getForcePullImage)
+    assert(f.container2.forcePullImage == proto2.getDocker.getForcePullImage)
 
     val proto3 = ContainerSerializer.toMesos(f.container3)
     assert(mesos.ContainerInfo.Type.DOCKER == proto3.getType)
     assert("group/image" == proto3.getDocker.getImage)
-    assert(f.container3.docker.get.network == Some(proto3.getDocker.getNetwork))
-    assert(f.container3.docker.get.privileged == proto3.getDocker.getPrivileged)
-    assert(f.container3.docker.get.parameters.map(_.key) == proto3.getDocker.getParametersList.asScala.map(_.getKey))
+    assert(f.container3.network == Some(proto3.getDocker.getNetwork))
+    assert(f.container3.privileged == proto3.getDocker.getPrivileged)
+    assert(f.container3.parameters.map(_.key) == proto3.getDocker.getParametersList.asScala.map(_.getKey))
     assert(
-      f.container3.docker.get.parameters.map(_.value) == proto3.getDocker.getParametersList.asScala.map(_.getValue)
+      f.container3.parameters.map(_.value) == proto3.getDocker.getParametersList.asScala.map(_.getValue)
     )
     assert(proto3.getDocker.hasForcePullImage)
-    assert(f.container3.docker.get.forcePullImage == proto3.getDocker.getForcePullImage)
+    assert(f.container3.forcePullImage == proto3.getDocker.getForcePullImage)
 
     val proto5 = ContainerSerializer.toMesos(f.container5)
     assert(proto5.getDocker.getPortMappingsCount == 4)
@@ -215,15 +190,15 @@ class ContainerTest extends MarathonSpec with Matchers {
     val containerInfo = Protos.ExtendedContainerInfo.newBuilder
       .setType(mesos.ContainerInfo.Type.DOCKER)
       .addAllVolumes(f.volumes.map(VolumeSerializer.toProto).asJava)
-      .setDocker(DockerSerializer.toProto(f.container.docker.get))
+      .setDocker(DockerDockerSerializer.toProto(f.container1))
       .build
 
-    val container = ContainerSerializer.fromProto(containerInfo)
-    assert(container == f.container)
+    val container1 = ContainerSerializer.fromProto(containerInfo)
+    assert(container1 == f.container1)
 
     val containerInfo2 = Protos.ExtendedContainerInfo.newBuilder
       .setType(mesos.ContainerInfo.Type.DOCKER)
-      .setDocker(DockerSerializer.toProto(f.container2.docker.get))
+      .setDocker(DockerDockerSerializer.toProto(f.container2))
       .build
 
     val container2 = ContainerSerializer.fromProto(containerInfo2)
@@ -231,21 +206,16 @@ class ContainerTest extends MarathonSpec with Matchers {
 
     val containerInfo3 = Protos.ExtendedContainerInfo.newBuilder
       .setType(mesos.ContainerInfo.Type.DOCKER)
-      .setDocker(DockerSerializer.toProto(f.container3.docker.get))
+      .setDocker(DockerDockerSerializer.toProto(f.container3))
       .build
 
     val container3 = ContainerSerializer.fromProto(containerInfo3)
     assert(container3 == f.container3)
   }
 
-  test("SerializationRoundtrip empty") {
-    val container1: Container = Container.Docker()
-    JsonTestHelper.assertSerializationRoundtripWorks(container1)
-  }
-
   test("SerializationRoundtrip with slightly more complex data") {
-    val f = fixture()
-    JsonTestHelper.assertSerializationRoundtripWorks(f.container)
+    val container: Container = fixture().container1
+    JsonTestHelper.assertSerializationRoundtripWorks(container)
   }
 
   private[this] def fromJson(json: String): Container = {
@@ -277,7 +247,7 @@ class ContainerTest extends MarathonSpec with Matchers {
 
     val readResult3 = fromJson(json3)
     val f = fixture()
-    assert (readResult3 == f.container)
+    assert (readResult3 == f.container1)
   }
 
   test("Reading JSON with portMappings") {
@@ -358,7 +328,8 @@ class ContainerTest extends MarathonSpec with Matchers {
   }
 
   test("SerializationRoundTrip with privileged, networking and parameters") {
-    JsonTestHelper.assertSerializationRoundtripWorks(fixture().container3)
+    val container: Container = fixture().container3
+    JsonTestHelper.assertSerializationRoundtripWorks(container)
   }
 
   test("Reading JSON with privileged, networking and parameters") {
@@ -404,20 +375,4 @@ class ContainerTest extends MarathonSpec with Matchers {
     val readResult7 = fromJson(json7)
     assert(readResult7 == fixture().container4)
   }
-
-  test("""FromJSON with Mesos ContainerInfo should parse successfully""") {
-    val f = new Fixture
-    val appDef = Json.parse(f.mesosContainerWithPersistentVolumeJsonStr).as[AppDefinition]
-    val expectedContainer = f.mesosContainerWithPersistentVolume
-
-    appDef.container should equal(Some(expectedContainer))
-  }
-
-  test("""ToJson should correctly handle container type MESOS""") {
-    val f = new Fixture
-    val appDefinition = AppDefinition(id = PathId("test"), container = Some(f.mesosContainerWithPersistentVolume))
-    val json = Json.toJson(appDefinition)
-    (json \ "container" \ "type").asOpt[String] should be(Some("MESOS"))
-  }
-
 }
